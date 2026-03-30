@@ -1,0 +1,103 @@
+---
+title: "Default of Credit Card Clients: Data Loading and Exploratory Data Analysis"
+author: "Alex Jones and Hudson Plaskoff"
+date: "2026-04-02"
+output:
+  html_document:
+    code_folding: hide
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(tidyverse)
+library(readxl)
+```
+
+## Introduction
+
+The Default of Credit Card Clients dataset from the UC Irvine Machine Learning Repository was originally published in 2016. This dataset contains data concerning default payments of individuals in Taiwan, including if the next credit card payment was paid or defaulted upon. It also contains data about each individual's level of education, marriage status, the dollar value of credit card statements for a given month, and more. The dataset's sample size is 30,000, meaning that 30,000 people's credit information were used in making this dataset.
+
+The dataset can be accessed here: https://archive.ics.uci.edu/dataset/350/default+of+credit+card+clients
+
+## Data Import
+
+```{r}
+ccdata <- read_excel("default of credit card clients.xls", skip=1) %>%
+  rename(
+    CREDIT = LIMIT_BAL,
+    REPAYMENT_2006_09 = PAY_0,
+    REPAYMENT_2006_08 = PAY_2,
+    REPAYMENT_2006_07 = PAY_3,
+    REPAYMENT_2006_06 = PAY_4,
+    REPAYMENT_2006_05 = PAY_5,
+    REPAYMENT_2006_04 = PAY_6,
+    STATEMENT_2006_09 = BILL_AMT1,
+    STATEMENT_2006_08 = BILL_AMT2,
+    STATEMENT_2006_07 = BILL_AMT3,
+    STATEMENT_2006_06 = BILL_AMT4,
+    STATEMENT_2006_05 = BILL_AMT5,
+    STATEMENT_2006_04 = BILL_AMT6,
+    LASTPAYMENT_2006_09 = PAY_AMT1,
+    LASTPAYMENT_2006_08 = PAY_AMT2,
+    LASTPAYMENT_2006_07 = PAY_AMT3,
+    LASTPAYMENT_2006_06 = PAY_AMT4,
+    LASTPAYMENT_2006_05 = PAY_AMT5,
+    LASTPAYMENT_2006_04 = PAY_AMT6,
+    NEXT_PAYMENT = "default payment next month"
+  ) %>%
+  mutate(
+    EDUCATION = case_when(
+      EDUCATION == 1       ~ "graduate_degree",
+      EDUCATION == 2        ~ "undergraduate_degree",
+      EDUCATION == 3        ~ "high_school",
+      EDUCATION == 4        ~ "other"
+    )
+  ) %>%
+  mutate(
+    SEX = case_when(
+      SEX == 1        ~ "male",
+      SEX == 2        ~ "female"
+    )
+  ) %>%
+  mutate(
+    MARRIAGE = case_when(
+      MARRIAGE == 1    ~ "married",
+      MARRIAGE == 2    ~ "single",
+      MARRIAGE == 3    ~ "other"
+    )
+  ) %>%
+  mutate(
+    NEXT_PAYMENT = case_when(
+      NEXT_PAYMENT == 1    ~ "paid",
+      NEXT_PAYMENT == 0    ~ "defaulted",
+    )
+  )
+```
+
+In order to import the data, we first had to utilize a different library than usual (readxl) because the dataset was stored in a XSL file rather than a CSV file. Otherwise put, R Studio didn't recognize how to read the file in the way it typically does, so we had to use a different approach.
+
+Next, we renamed some of the variable names using context provided by the description of the dataset in order for it to make more sense by itself. This mainly meant renaming the series of variables beginning with "PAY", "BILL_AMT", and "PAY_AMT" so that they could be understood by someone looking at this dataset alone and not having access to any other information.
+
+Lastly, we performed a conditional transformation on four of the variables, meaning that we converted their numerical data (which represented categorical data) to explicit categorical data. An example of this is "2" in education indicating that a given individual has an undergraduate degree. This transformation will allow for better analysis in future steps.
+
+# Univariate Data: TBD
+
+```{r}
+
+```
+
+# Bivariate Data: TBD
+
+```{r}
+
+```
+
+# Trivariate Data: TBD
+
+```{r}
+
+```
+
+# Conclusion
+
+TEXT
