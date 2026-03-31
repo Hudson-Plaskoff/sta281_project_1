@@ -86,11 +86,46 @@ Lastly, we performed a conditional transformation on four of the variables, mean
 
 ```
 
-# Bivariate Data: TBD
-
+# Bivariate Data
+## Education and Credit
 ```{r}
+ggplot(ccdata, aes(x = EDUCATION, y = CREDIT)) +
+  geom_boxplot()
 
+ccdata_credit_by_education <- ccdata %>% 
+  group_by(EDUCATION) %>%
+  summarize(
+    mean_credit = mean(CREDIT),
+    sd_credit = sd(CREDIT),
+    n = n()
+  )
+
+knitr::kable(ccdata_credit_by_education %>% head())
 ```
+
+The data shows that those with higher education levels have higher credit on average than those with lower credit. This is also shown for those with education marked as "other", but the small sample size for this category means it can be heavily skewed by outliers.
+
+## Age and Credit
+```{r}
+ggplot(ccdata, aes(x = AGE, y = CREDIT)) +
+  geom_point(alpha=0.1) +
+  geom_smooth(method="lm")
+
+ccdata_credit_by_age <- ccdata %>% 
+  group_by(AGE) %>%
+  summarize(
+    mean_credit = mean(CREDIT),
+    sd_credit = sd(CREDIT),
+    n = n()
+  )
+
+knitr::kable(ccdata_credit_by_age %>% head())
+knitr::kable(ccdata_credit_by_age %>% tail())
+```
+
+The data shows that older people have higher credit on average than younger people. However, there are significantly fewer observations (n) for older people than younger people, meaning that the averages for higher age ranges are heavily skewed by outliers. 
+
+
 
 # Trivariate Data: TBD
 
