@@ -96,6 +96,7 @@ ccdata_credit_by_education <- ccdata %>%
   group_by(EDUCATION) %>%
   summarize(
     mean_credit = mean(CREDIT),
+    median_credit = median(CREDIT),
     sd_credit = sd(CREDIT),
     n = n()
   )
@@ -112,27 +113,51 @@ ggplot(ccdata, aes(x = AGE, y = CREDIT)) +
   geom_smooth(method="lm")
 
 ccdata_credit_by_age <- ccdata %>% 
-  group_by(AGE) %>%
   summarize(
-    mean_credit = mean(CREDIT),
-    sd_credit = sd(CREDIT),
+    correlation = cor(AGE,CREDIT),
     n = n()
   )
 
-knitr::kable(ccdata_credit_by_age %>% head())
-knitr::kable(ccdata_credit_by_age %>% tail())
+knitr::kable(ccdata_credit_by_age)
 ```
 
-The data shows that older people have higher credit on average than younger people. However, there are significantly fewer observations (n) for older people than younger people, meaning that the averages for higher age ranges are heavily skewed by outliers. 
+The visualization shows that older people have higher credit on average than younger people. However, there are significantly fewer observations (n) for older people than younger people, meaning that the averages for higher age ranges are heavily skewed by outliers. Additionally, further analysis reveals that there is a very low but still positive correlation between age and credit.
 
+# Trivariate Data
+## Age, Credit, and Education
+```{r}
+ggplot(ccdata, aes(x = AGE, y = CREDIT,color=EDUCATION)) +
+  geom_point(alpha=0.075) +
+  geom_smooth(method="lm")
 
+ggplot(ccdata, aes(x = AGE, y = CREDIT,color=EDUCATION)) +
+  geom_point(alpha=0.05) +
+  geom_smooth(method="lm") +
+  facet_wrap(~EDUCATION)
 
-# Trivariate Data: TBD
+ccdata_credit_by_age_ed <- ccdata %>%
+  group_by(EDUCATION) %>%
+  summarize(
+    correlation = cor(AGE,CREDIT),
+    n = n()
+  )
+
+knitr::kable(ccdata_credit_by_age_ed)
+```
+
+The visualizations and correlations both show that there is a higher positive correlation between age and credit as the level of education increases, going from high school to undergraduate to graduate. The education levels of other and NA also have relatively high positive correlations of age and credit, but these are skewed by a small sample size that allows outliers to disproportionately affect the final correlation.
 
 ```{r}
+ggplot(ccdata, aes(x = STATEMENT_2006_09, y = LASTPAYMENT_2006_09,color=NEXT_PAYMENT)) +
+  geom_point(alpha=0.075) +
+  geom_smooth(method="lm") +
+  facet_wrap(~EDUCATION)
 
+
+ggplot(ccdata, aes(x = STATEMENT_2006_09, y = LASTPAYMENT_2006_09,color=NEXT_PAYMENT)) +
+  geom_point(alpha=0.075) +
+  geom_smooth(method="lm")
 ```
-
 # Conclusion
 
 TEXT
