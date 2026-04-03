@@ -7,7 +7,7 @@ output:
     code_folding: hide
 ---
 
-```{r setup, include=FALSE}
+```{r setup, include=FALSE, warning=FALSE, message=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
 library(tidyverse)
 library(readxl)
@@ -87,15 +87,17 @@ ggplot(ccdata,aes(x=CREDIT)) + geom_histogram(binwidth=20000)
 
 ccdata_credit <- ccdata %>%
   summarize(
+    min_credit = min(CREDIT),
     mean_credit = mean(CREDIT),
     median_credit = median(CREDIT),
+    max_credit = max(CREDIT),
     sd_credit = sd(CREDIT)
   )
 
 knitr::kable(ccdata_credit)
 ```
 
-TEXT
+There are more observations of individuals with lower credit than there are with higher credit. This is shown in the histogram, as well as by the mean and median of credit, which indicate that an individual's credit is low on average. The standard deviation indicates that the observations of credit are not highly concentrated around the mean or median, and that they instead are more spread out. This is also shown by the minimum credit observed of 10,000 and the maximum credit observed of 1,000,000. Although these outliers do exist, a vast majority of individuals did not have credit above 500,000.
 
 ## Age
 ```{r}
@@ -103,15 +105,17 @@ ggplot(ccdata,aes(x=AGE)) + geom_histogram(binwidth=2)
 
 ccdata_age <- ccdata %>%
   summarize(
+    min_age = min(AGE),
     mean_age = mean(AGE),
     median_age = median(AGE),
+    max_age = max(AGE),
     sd_age = sd(AGE)
   )
 
 knitr::kable(ccdata_age)
 ```
 
-TEXT
+The average individual in this dataset is roughly 34 to 35 years old, as indicated by the mean age of 35.4855 and the median age of 34. The minimum age is 21 and the maximium age is 79, which in this context means that there were no observed individuals with credit outside of this age range. The lower standard deviation reveals that there is a moderate concentration of individuals near the average age, although there are still some notable observations outside of this range.
 
 ## Education
 ```{r}
@@ -129,7 +133,7 @@ ccdata_education <- ccdata %>%
 knitr::kable(ccdata_education)
 ```
 
-TEXT
+The data reveals that most of the people observed with credit have an undergraduate (46.76%) or graduate degree (35.28%). There are also individuals with credit that did not have a college degree, as seen by those with high school degrees (16.39%) and those who did not fall into any of these categories (1.56%).
 
 # Bivariate Data
 ## Education and Credit
@@ -149,10 +153,10 @@ ccdata_credit_by_education <- ccdata %>%
 knitr::kable(ccdata_credit_by_education %>% head())
 ```
 
-The data shows that those with higher education levels have higher credit on average than those with lower credit. This is also shown for those with education marked as "other", but the small sample size for this category means it can be heavily skewed by outliers.
+The data shows that those with higher education levels have higher credit on average than those with lower credit. This is also shown for those with education marked as "other", but the small sample size for this category means it can be heavily skewed by outliers, as indicated by the substantial standard deviation of credit that remains in each category.
 
 ## Age and Credit
-```{r}
+```{r, message=FALSE}
 ggplot(ccdata, aes(x = AGE, y = CREDIT)) +
   geom_point(alpha=0.1) +
   geom_smooth(method="lm")
@@ -166,11 +170,11 @@ ccdata_credit_by_age <- ccdata %>%
 knitr::kable(ccdata_credit_by_age)
 ```
 
-The visualization shows that older people have higher credit on average than younger people. However, there are significantly fewer observations (n) for older people than younger people, meaning that the averages for higher age ranges are heavily skewed by outliers. Additionally, further analysis reveals that there is a very low but still positive correlation between age and credit.
+The visualization shows that older people have higher credit on average than younger people. However, the scatterplot reveals that there are significantly fewer observations (n) for older people than younger people, meaning that the averages for higher age ranges are heavily skewed by outliers. Additionally, there is a very low but still positive correlation between age and credit.
 
 # Trivariate Data
 ## Age, Credit, and Education
-```{r}
+```{r, message=FALSE}
 ggplot(ccdata, aes(x = AGE, y = CREDIT,color=EDUCATION)) +
   geom_point(alpha=0.075) +
   geom_smooth(method="lm")
@@ -190,8 +194,8 @@ ccdata_credit_by_age_ed <- ccdata %>%
 knitr::kable(ccdata_credit_by_age_ed)
 ```
 
-The visualizations and correlations both show that there is a higher positive correlation between age and credit as the level of education increases, going from high school to undergraduate to graduate. The education levels indicated to be other (not high school, undergraduate, or graduate) also have relatively high positive correlations of age and credit, but these are skewed by a small sample size that allows outliers to disproportionately affect the final correlation.
+The visualizations and correlations both show that there is a higher positive correlation between age and credit as the level of education increases, going from high school to undergraduate to graduate. Individuals with a high school education show a very low positive correlation, whereas individuals with college or graduate level education show a relatively high positive correlation. The education levels indicated to be other (not high school, undergraduate, or graduate) also have relatively high positive correlations of age and credit, but these are skewed by a small sample size that allows outliers to disproportionately affect the final correlation. In other words, a higher correlation in this context indicates a higher credit limit at an older age.
 
 # Conclusion
 
-TEXT
+This analysis of the "Default of Credit Card Clients" dataset reveals that there is a correlation between higher levels of education and higher credit limits for individuals in Taiwan. As individuals begin to take on credit at younger ages, they start on average at a lower limit, but over time as they age, their respective limits increase at different rates. Individuals with more education at a later age will have, on average, a higher credit limit than individuals with a lower level of education.
