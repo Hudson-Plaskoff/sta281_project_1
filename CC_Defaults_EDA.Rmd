@@ -47,10 +47,10 @@ ccdata <- read_excel("default of credit card clients.xls", skip=1) %>%
   ) %>%
   mutate(
     EDUCATION = case_when(
-      EDUCATION == 1       ~ "graduate_degree",
+      EDUCATION == 1        ~ "graduate_degree",
       EDUCATION == 2        ~ "undergraduate_degree",
       EDUCATION == 3        ~ "high_school",
-      EDUCATION == 4        ~ "other"
+      .default = "other"
     )
   ) %>%
   mutate(
@@ -80,11 +80,53 @@ Next, we renamed some of the variable names using context provided by the descri
 
 Lastly, we performed a conditional transformation on four of the variables, meaning that we converted their numerical data (which represented categorical data) to explicit categorical data. An example of this is "2" in education indicating that a given individual has an undergraduate degree. This transformation will allow for better analysis in future steps.
 
-# Univariate Data: TBD
-
+# Univariate Data
+## Credit
 ```{r}
+ggplot(ccdata,aes(x=CREDIT)) + geom_histogram(binwidth=20000)
 
+ccdata_credit <- ccdata %>%
+  summarize(
+    mean_credit = mean(CREDIT),
+    median_credit = median(CREDIT),
+    sd_credit = sd(CREDIT)
+  )
+
+knitr::kable(ccdata_credit)
 ```
+
+TEXT
+
+## Age
+```{r}
+ggplot(ccdata,aes(x=AGE)) + geom_histogram(binwidth=2)
+
+ccdata_age <- ccdata %>%
+  summarize(
+    mean_age = mean(AGE),
+    median_age = median(AGE),
+    sd_age = sd(AGE)
+  )
+
+knitr::kable(ccdata_age)
+```
+
+TEXT
+
+## Education
+```{r}
+ggplot(ccdata,aes(x=EDUCATION)) + geom_bar()
+
+ccdata_education <- ccdata %>%
+  group_by(EDUCATION) %>%
+  summarize(
+    n = n()
+  )
+
+knitr::kable(ccdata_education)
+```
+
+TEXT
 
 # Bivariate Data
 ## Education and Credit
@@ -145,19 +187,8 @@ ccdata_credit_by_age_ed <- ccdata %>%
 knitr::kable(ccdata_credit_by_age_ed)
 ```
 
-The visualizations and correlations both show that there is a higher positive correlation between age and credit as the level of education increases, going from high school to undergraduate to graduate. The education levels of other and NA also have relatively high positive correlations of age and credit, but these are skewed by a small sample size that allows outliers to disproportionately affect the final correlation.
+The visualizations and correlations both show that there is a higher positive correlation between age and credit as the level of education increases, going from high school to undergraduate to graduate. The education levels indicated to be other (not high school, undergraduate, or graduate) also have relatively high positive correlations of age and credit, but these are skewed by a small sample size that allows outliers to disproportionately affect the final correlation.
 
-```{r}
-ggplot(ccdata, aes(x = STATEMENT_2006_09, y = LASTPAYMENT_2006_09,color=NEXT_PAYMENT)) +
-  geom_point(alpha=0.075) +
-  geom_smooth(method="lm") +
-  facet_wrap(~EDUCATION)
-
-
-ggplot(ccdata, aes(x = STATEMENT_2006_09, y = LASTPAYMENT_2006_09,color=NEXT_PAYMENT)) +
-  geom_point(alpha=0.075) +
-  geom_smooth(method="lm")
-```
 # Conclusion
 
 TEXT
