@@ -525,8 +525,12 @@ other information.</p>
 variables, meaning that we converted their numerical data (which
 represented categorical data) to explicit categorical data. An example
 of this is “2” in education indicating that a given individual has an
-undergraduate degree. This transformation will allow for better analysis
-in future steps.</p>
+undergraduate degree. One issue that required more consideration was the
+presence of both “4”s (which indicated “other”) and other values (not 1,
+2, 3, or 4) that resulted in NAs when we strictly set four types for
+education, which we resolved by combining these two into a single
+“other” category. These transformations allow for better analysis in
+future steps.</p>
 </div>
 <div id="univariate-data" class="section level1">
 <h1>Univariate Data</h1>
@@ -598,6 +602,9 @@ knitr::kable(ccdata_age)</code></pre>
   group_by(EDUCATION) %&gt;%
   summarize(
     n = n()
+  ) %&gt;%
+  mutate(
+    prop = n/sum(n)
   )
 
 knitr::kable(ccdata_education)</code></pre>
@@ -606,24 +613,29 @@ knitr::kable(ccdata_education)</code></pre>
 <tr class="header">
 <th align="left">EDUCATION</th>
 <th align="right">n</th>
+<th align="right">prop</th>
 </tr>
 </thead>
 <tbody>
 <tr class="odd">
 <td align="left">graduate_degree</td>
 <td align="right">10585</td>
+<td align="right">0.3528333</td>
 </tr>
 <tr class="even">
 <td align="left">high_school</td>
 <td align="right">4917</td>
+<td align="right">0.1639000</td>
 </tr>
 <tr class="odd">
 <td align="left">other</td>
 <td align="right">468</td>
+<td align="right">0.0156000</td>
 </tr>
 <tr class="even">
 <td align="left">undergraduate_degree</td>
 <td align="right">14030</td>
+<td align="right">0.4676667</td>
 </tr>
 </tbody>
 </table>
